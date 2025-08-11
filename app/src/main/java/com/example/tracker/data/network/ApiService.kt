@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    @GET("/players")
+    @GET("players")
     suspend fun getPlayerByName(
         @Query(QUERY_FILTER_PLAYER_NAMES) playerName: String
     ) : PlayerResponseDto
