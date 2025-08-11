@@ -1,16 +1,24 @@
 package com.example.tracker.data.repository
 
-import com.example.tracker.data.mappers.PlayerMapper
+import android.app.Application
+import com.example.tracker.data.db.AppDatabase
+import com.example.tracker.data.mappers.toPlayerInfoEntity
+import com.example.tracker.data.mappers.toSeasonInfoEntityList
 import com.example.tracker.data.network.ApiFactory
 import com.example.tracker.domain.models.PlayerInfoEntity
+import com.example.tracker.domain.models.SeasonInfoEntity
 import com.example.tracker.domain.repository.TrackerRepository
 
-object TrackerRepositoryImpl: TrackerRepository {
+class TrackerRepositoryImpl(application: Application): TrackerRepository {
 
     private val apiService = ApiFactory.apiService
-    private val mapper = PlayerMapper()
+    private val seasonDao = AppDatabase.getInstance(application).seasonDao()
 
     override suspend fun getPlayer(playerName: String): PlayerInfoEntity {
-        return mapper.mapDtoToEntity(apiService.getPlayerByName(playerName))
+        return apiService.getPlayerByName(playerName).toPlayerInfoEntity()
+    }
+
+    override suspend fun getSeasons(): List<SeasonInfoEntity> {
+        return apiService.getSeasons().toSeasonInfoEntityList()
     }
 }
