@@ -11,6 +11,11 @@ fun SeasonInfoEntity.toSeasonDbModel() = SeasonDbModel(
     isCurrentSeason = isCurrentSeason
 )
 
+fun SeasonDbModel.toSeasonInfoEntity() = SeasonInfoEntity(
+    id = id,
+    isCurrentSeason = isCurrentSeason
+)
+
 fun SeasonDataDto.toSeasonInfoEntity(): SeasonInfoEntity {
     return SeasonInfoEntity(
         id = id,
