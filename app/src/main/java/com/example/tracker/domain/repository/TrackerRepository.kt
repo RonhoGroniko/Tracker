@@ -2,6 +2,7 @@ package com.example.tracker.domain.repository
 
 import com.example.tracker.domain.models.PlayerInfoEntity
 import com.example.tracker.domain.models.PlayerSeasonInfoEntity
+
 import com.example.tracker.domain.models.SeasonInfoEntity
 
 interface TrackerRepository {
