@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.tracker.data.db.models.SeasonDbModel
 
-@Database([SeasonDbModel::class], version = 1, exportSchema = false)
+@Database([SeasonDbModel::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun seasonDao(): SeasonDao
@@ -30,7 +30,9 @@ abstract class AppDatabase : RoomDatabase() {
                     application,
                     AppDatabase::class.java,
                     DB_NAME
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(true)
+                    .build()
                 INSTANCE = db
                 return db
             }
