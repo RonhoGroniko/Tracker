@@ -9,12 +9,13 @@
 
 
     <ImageView
+        android:id="@+id/image_game"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitStart"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription"
-        tools:srcCompat="@drawable/ic_pubg" />
+        tools:srcCompat="@drawable/pubg" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutName"
@@ -23,10 +24,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="4dp"
+        app:cursorColor="@color/black"
         app:endIconDrawable="@drawable/ic_search"
         app:endIconMode="custom"
         app:hintTextColor="@color/black"
-        app:cursorColor="@color/black"
         app:layout_constraintBottom_toTopOf="@id/guideLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -38,7 +39,8 @@
             android:background="@color/white"
             android:fontFamily="@font/aldrich"
             android:hint="@string/search"
-            android:inputType="textCapWords" />
+            android:inputType="textCapWords"
+            android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.Guideline

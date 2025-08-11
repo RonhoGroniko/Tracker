@@ -1,5 +1,6 @@
 package com.example.tracker.data.network.models
 
+import com.example.tracker.common.enums.BanType
 import com.google.gson.annotations.SerializedName
 
 data class PlayerAttributesDto(
