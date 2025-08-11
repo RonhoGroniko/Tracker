@@ -59,9 +59,9 @@ class GameFragment : Fragment() {
         binding.editTextName.doAfterTextChanged { text ->
             viewModel.changeString(text.toString())
         }
-        binding.btnSeasons.setOnClickListener {
-            viewModel.loadSeasons()
-        }
+//        binding.btnSeasons.setOnClickListener {
+//            viewModel.loadSeasons()
+//        }
     }
 
     override fun onDestroyView() {
