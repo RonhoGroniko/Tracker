@@ -6,4 +6,5 @@
     <string name="valorant">Valorant</string>
     <string name="marvel_rivals">Marvel Rivals</string>
     <string name="search">Search:</string>
+    <string name="error_input_name">Invalid name input</string>
 </resources>

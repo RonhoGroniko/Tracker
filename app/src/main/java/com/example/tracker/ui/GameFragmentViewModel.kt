@@ -18,15 +18,47 @@ class GameFragmentViewModel: ViewModel() {
     val inputText: LiveData<String>
         get() = _inputText
 
-    fun getPlayer() {
+    private val _errorLD = MutableLiveData<Boolean>()
+    val errorLD: LiveData<Boolean>
+        get() = _errorLD
+
+    fun loadPlayer() {
         viewModelScope.launch {
-            val name = _inputText.value ?: ""
-            val playerInfo = getPlayerByNameUseCase(name)
-            Log.d("GameFragmentViewModel", playerInfo.name)
+            try {
+                val playerName = parseName(_inputText.value)
+                if (validateInputName(playerName)) {
+                    val playerInfo = getPlayerByNameUseCase(playerName)
+                    Log.d(TAG, playerInfo.name)
+                }
+            } catch (e: Exception) {
+                Log.d(TAG, e.message.toString())
+            }
         }
+    }
+
+    private fun parseName(str: String?): String {
+        return str?.trim() ?: ""
+    }
+
+    private fun validateInputName(name: String): Boolean {
+        if (name.isEmpty()) {
+            _errorLD.value = true
+            return false
+        }
+        _errorLD.value = false
+        return true
     }
 
     fun changeString(string: String) {
         _inputText.value = string
+    }
+
+    fun resetInputNameError() {
+        _errorLD.value = false
+    }
+
+    companion object {
+
+        private const val TAG = "GameFragmentViewModel"
     }
 }
