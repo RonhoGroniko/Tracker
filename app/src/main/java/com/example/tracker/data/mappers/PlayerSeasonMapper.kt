@@ -3,6 +3,7 @@ package com.example.tracker.data.mappers
 import com.example.tracker.data.network.models.player_season_response.GameMode
 import com.example.tracker.data.network.models.player_season_response.PLayerSeasonResponseDto
 import com.example.tracker.domain.models.PlayerSeasonInfoEntity
+import com.example.tracker.ui.models.PlayerSeasonInfoUiModel
 
 
 fun PLayerSeasonResponseDto.toPlayerSeasonInfoEntity(gameMode: GameMode): PlayerSeasonInfoEntity {
@@ -36,3 +37,25 @@ fun PLayerSeasonResponseDto.toPlayerSeasonInfoEntity(gameMode: GameMode): Player
         wins = stats.wins
     )
 }
+
+fun PlayerSeasonInfoEntity.toPlayerSeasonInfoUiModel() = PlayerSeasonInfoUiModel(
+    assists = assists,
+    knocked = knocked,
+    damageDealt = damageDealt,
+    headshotKills = headshotKills,
+    kills = kills,
+    longestKill = longestKill,
+    longestTimeSurvived = longestTimeSurvived,
+    mostSurvivalTime = mostSurvivalTime,
+    revives = revives,
+    rideDistance = rideDistance,
+    roadKills = roadKills,
+    roundMostKills = roundMostKills,
+    roundsPlayed = roundsPlayed,
+    swimDistance = swimDistance,
+    timeSurvived = timeSurvived,
+    top10s = top10s,
+    vehicleDestroys = vehicleDestroys,
+    walkDistance = walkDistance,
+    wins = wins
+)

@@ -1,0 +1,43 @@
+package com.example.tracker.ui
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.tracker.R
+import com.example.tracker.common.extentions.parcelable
+import com.example.tracker.ui.models.PlayerSeasonInfoUiModel
+
+private const val ARG_PLAYER_STATS = "playerStats"
+
+
+class GameStatsFragment : Fragment() {
+
+    private var playerInfo: PlayerSeasonInfoUiModel? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            playerInfo = it.parcelable(ARG_PLAYER_STATS)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_game_stats, container, false)
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance(playerSeasonInfoUiModel: PlayerSeasonInfoUiModel) =
+            GameStatsFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARG_PLAYER_STATS, playerSeasonInfoUiModel)
+                }
+            }
+    }
+}

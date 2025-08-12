@@ -67,7 +67,7 @@ class GameFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.errorLD.observe(viewLifecycleOwner) {isError ->
+        viewModel.errorLD.observe(viewLifecycleOwner) { isError ->
             val message = if (isError) {
                 binding.textInputLayoutName.context.getString(R.string.error_input_name)
             } else {
@@ -75,7 +75,23 @@ class GameFragment : Fragment() {
             }
             binding.textInputLayoutName.error = message
         }
+        viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.main_container,
+                    GameStatsFragment.newInstance(it)
+                )
+                .commit()
+        }
+        viewModel.isLoadingLD.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.progressCircular.visibility = View.VISIBLE
+            } else {
+                binding.progressCircular.visibility = View.GONE
+            }
+        }
     }
+
 
     private fun setupTextChangeListeners() {
         binding.editTextName.doOnTextChanged { _, _, _, _ ->
@@ -95,9 +111,10 @@ class GameFragment : Fragment() {
                     R.drawable.pubg
                 )
             )
+
             GameName.VALORANT -> showTODOToast("TODO Set drawable Valorant")
             GameName.MARVEL_RIVALS -> showTODOToast("TODO Set drawable MARVEL_RIVALS")
-            null -> TODO()
+            null -> throw IllegalArgumentException("Unknown gameName $gameName")
         }
     }
 
