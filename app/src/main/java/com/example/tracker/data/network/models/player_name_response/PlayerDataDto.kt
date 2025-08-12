@@ -1,10 +1,12 @@
 package com.example.tracker.data.network.models.player_name_response
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class PlayerDataDto(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("attributes")
+    @SerialName("attributes")
     val attributes: PlayerAttributesDto
 )

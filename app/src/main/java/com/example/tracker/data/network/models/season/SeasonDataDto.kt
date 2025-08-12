@@ -1,10 +1,12 @@
 package com.example.tracker.data.network.models.season
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SeasonDataDto(
-    @SerializedName("id")
+    @SerialName("id")
     val id: String,
-    @SerializedName("attributes")
+    @SerialName("attributes")
     val attributes: SeasonAttributesDto
 )

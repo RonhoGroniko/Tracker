@@ -54,14 +54,11 @@ class GameFragment : Fragment() {
             binding.editTextName.setText(it)
         }
         binding.textInputLayoutName.setEndIconOnClickListener {
-            viewModel.loadPlayer()
+            viewModel.loadCurrentSeasonPLayerInfo()
         }
         binding.editTextName.doAfterTextChanged { text ->
             viewModel.changeString(text.toString())
         }
-//        binding.btnSeasons.setOnClickListener {
-//            viewModel.loadSeasons()
-//        }
     }
 
     override fun onDestroyView() {

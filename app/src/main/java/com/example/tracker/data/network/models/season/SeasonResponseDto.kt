@@ -1,8 +1,10 @@
 package com.example.tracker.data.network.models.season
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SeasonResponseDto(
-    @SerializedName("data")
+    @SerialName("data")
     val data: List<SeasonDataDto>
 )
