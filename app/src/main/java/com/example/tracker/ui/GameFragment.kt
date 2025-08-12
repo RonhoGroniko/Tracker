@@ -59,6 +59,9 @@ class GameFragment : Fragment() {
         binding.editTextName.doAfterTextChanged { text ->
             viewModel.changeString(text.toString())
         }
+        binding.btnSeasons.setOnClickListener {
+            viewModel.loadSeasons()
+        }
     }
 
     override fun onDestroyView() {
@@ -76,18 +79,27 @@ class GameFragment : Fragment() {
             binding.textInputLayoutName.error = message
         }
         viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.main_container,
-                    GameStatsFragment.newInstance(it)
-                )
-                .commit()
+            if (it != null) {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.main_container,
+                        GameStatsFragment.newInstance(it)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                viewModel.resetPlayerSeasonInfo()
+            }
         }
         viewModel.isLoadingLD.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
                 binding.progressCircular.visibility = View.VISIBLE
             } else {
                 binding.progressCircular.visibility = View.GONE
+            }
+        }
+        viewModel.errorRequestLD.observe(viewLifecycleOwner) {
+            if (it) {
+                showRequestErrorToast()
             }
         }
     }
@@ -98,6 +110,15 @@ class GameFragment : Fragment() {
             viewModel.resetInputNameError()
         }
     }
+
+    private fun showRequestErrorToast() {
+        Toast.makeText(
+            context,
+            getString(R.string.invalid_name),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
 
     private fun showTODOToast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()

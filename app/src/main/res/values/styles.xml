@@ -6,4 +6,10 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">24sp</item>
     </style>
+
+    <style name="CustomEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textSelectHandle">@drawable/handle_middle</item>
+        <item name="android:textSelectHandleLeft">@drawable/handle_left</item>
+        <item name="android:textSelectHandleRight">@drawable/handle_right</item>
+    </style>
 </resources>

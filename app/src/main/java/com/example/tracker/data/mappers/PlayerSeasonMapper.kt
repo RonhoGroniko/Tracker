@@ -6,6 +6,7 @@ import com.example.tracker.domain.models.PlayerSeasonInfoEntity
 import com.example.tracker.ui.models.PlayerSeasonInfoUiModel
 
 
+//TODO: store all data in entity
 fun PLayerSeasonResponseDto.toPlayerSeasonInfoEntity(gameMode: GameMode): PlayerSeasonInfoEntity {
     val stats = when(gameMode) {
         GameMode.DUO -> data.attributes.gameModeStats.duo

@@ -39,15 +39,20 @@ class GameFragmentViewModel(application: Application) :
     val errorLD: LiveData<Boolean>
         get() = _errorLD
 
+    private val _errorRequestLD = MutableLiveData<Boolean>()
+    val errorRequestLD: LiveData<Boolean>
+        get() = _errorRequestLD
+
     private val _isLoadingLD = MutableLiveData(false)
     val isLoadingLD: LiveData<Boolean>
         get() = _isLoadingLD
 
-    private val _playerSeasonInfo = MutableLiveData<PlayerSeasonInfoUiModel>()
-    val playerSeasonInfo: LiveData<PlayerSeasonInfoUiModel>
+    private val _playerSeasonInfo = MutableLiveData<PlayerSeasonInfoUiModel?>()
+    val playerSeasonInfo: LiveData<PlayerSeasonInfoUiModel?>
         get() = _playerSeasonInfo
 
     private suspend fun loadPlayer(): PlayerInfoEntity? {
+        _errorRequestLD.value = false
         try {
             val playerName = parseName(_inputText.value)
             if (validateInputName(playerName)) {
@@ -59,6 +64,7 @@ class GameFragmentViewModel(application: Application) :
             }
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
+            _errorRequestLD.value = true
             return null
         }
     }
@@ -82,6 +88,7 @@ class GameFragmentViewModel(application: Application) :
                 return@launch
             } else {
                 _isLoadingLD.value = true
+                _errorRequestLD.value = false
             }
             val seasonDeferred = async { getCurrentSeasonUseCase().id }
             val loadPlayerDeferred = async { loadPlayer() }
@@ -89,13 +96,14 @@ class GameFragmentViewModel(application: Application) :
             val seasonID = seasonDeferred.await()
             val playerInfo = loadPlayerDeferred.await()
             if (playerInfo != null) {
-                val playerSeasonInfo = getPlayerSeasonInfoUseCase(playerInfo.id, seasonID, GameMode.SOLO)
-                _playerSeasonInfo.value = playerSeasonInfo.toPlayerSeasonInfoUiModel()
-                Log.d(TAG, playerSeasonInfo.toString())
+                try {
+                    val playerSeasonInfo = getPlayerSeasonInfoUseCase(playerInfo.id, seasonID, GameMode.SOLO)
+                    _playerSeasonInfo.value = playerSeasonInfo.toPlayerSeasonInfoUiModel()
+                } catch (e: Exception) { }
             } else {
-                //TODO SHOW TOAST
                 _isLoadingLD.value = false
             }
+            _isLoadingLD.value = false
         }
     }
 
@@ -118,6 +126,10 @@ class GameFragmentViewModel(application: Application) :
 
     fun resetInputNameError() {
         _errorLD.value = false
+    }
+
+    fun resetPlayerSeasonInfo() {
+        _playerSeasonInfo.value = null
     }
 
     companion object {

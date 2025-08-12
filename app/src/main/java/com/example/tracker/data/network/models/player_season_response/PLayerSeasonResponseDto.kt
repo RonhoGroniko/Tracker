@@ -80,6 +80,7 @@ data class PlayerSeasonGameStats(
     val wins: Int
 )
 
+//TODO MOVE
 @Serializable
 enum class GameMode {
     DUO, DUO_FPP, SOLO, SOLO_FPP, SQUAD, SQUAD_FPP
