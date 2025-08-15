@@ -8,14 +8,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.tracker.R
 import com.example.tracker.common.extentions.parcelable
-import com.example.tracker.ui.models.PlayerSeasonInfoUiModel
+import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
 
 private const val ARG_PLAYER_STATS = "playerStats"
 
 
 class GameStatsFragment : Fragment() {
 
-    private var playerInfo: PlayerSeasonInfoUiModel? = null
+    private var playerInfo: PlayerSeasonGameModeStatsUiModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +41,10 @@ class GameStatsFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(playerSeasonInfoUiModel: PlayerSeasonInfoUiModel) =
+        fun newInstance(playerSeasonGameModeStatsUiModel: PlayerSeasonGameModeStatsUiModel) =
             GameStatsFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(ARG_PLAYER_STATS, playerSeasonInfoUiModel)
+                    putParcelable(ARG_PLAYER_STATS, playerSeasonGameModeStatsUiModel)
                 }
             }
     }

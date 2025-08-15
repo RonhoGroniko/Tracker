@@ -1,10 +1,8 @@
 package com.example.tracker.data.network.models.season
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class SeasonAttributesDto(
-    @SerialName("isCurrentSeason")
+    @SerializedName("isCurrentSeason")
     val isCurrentSeason: Boolean
 )

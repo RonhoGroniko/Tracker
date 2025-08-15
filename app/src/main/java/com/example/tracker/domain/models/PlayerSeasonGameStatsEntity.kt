@@ -1,7 +1,20 @@
 package com.example.tracker.domain.models
 
 
-data class PlayerSeasonInfoEntity(
+data class PlayerSeasonGameModeStatsEntity(
+    val gameModeStats: PlayerSeasonGameModeEntity
+)
+
+data class PlayerSeasonGameModeEntity(
+    val duo: PlayerSeasonGameStatsEntity,
+    val duoFpp: PlayerSeasonGameStatsEntity,
+    val solo: PlayerSeasonGameStatsEntity,
+    val soloFpp: PlayerSeasonGameStatsEntity,
+    val squad: PlayerSeasonGameStatsEntity,
+    val squadFpp: PlayerSeasonGameStatsEntity,
+)
+
+data class PlayerSeasonGameStatsEntity(
     val assists: Int,
     val knocked: Int, // Number of enemy players knocked
     val damageDealt: Double,

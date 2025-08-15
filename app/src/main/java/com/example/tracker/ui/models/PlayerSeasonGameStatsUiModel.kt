@@ -4,7 +4,22 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class PlayerSeasonInfoUiModel (
+data class PlayerSeasonGameModeStatsUiModel(
+    val gameModeStats: PlayerSeasonGameModeUiModel
+) : Parcelable
+
+@Parcelize
+data class PlayerSeasonGameModeUiModel(
+    val duo: PlayerSeasonGameStatsUiModel,
+    val duoFpp: PlayerSeasonGameStatsUiModel,
+    val solo: PlayerSeasonGameStatsUiModel,
+    val soloFpp: PlayerSeasonGameStatsUiModel,
+    val squad: PlayerSeasonGameStatsUiModel,
+    val squadFpp: PlayerSeasonGameStatsUiModel,
+) : Parcelable
+
+@Parcelize
+data class PlayerSeasonGameStatsUiModel (
     val assists: Int,
     val knocked: Int, // Number of enemy players knocked
     val damageDealt: Double,

@@ -1,15 +1,12 @@
 package com.example.tracker.data.network.models.player_name_response
 
-import com.example.tracker.common.enums.BanType
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
 data class PlayerAttributesDto(
-    @SerialName("banType")
+    @SerializedName("banType")
     val banType: BanType,
-    @SerialName("clanId")
+    @SerializedName("clanId")
     val clanId: String,
-    @SerialName("name")
+    @SerializedName("name")
     val name: String
 )

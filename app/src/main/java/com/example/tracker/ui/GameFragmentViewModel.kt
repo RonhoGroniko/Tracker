@@ -7,16 +7,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.tracker.data.db.AppDatabase
-import com.example.tracker.data.mappers.toPlayerSeasonInfoUiModel
+import com.example.tracker.data.mappers.toPlayerSeasonGameModeStatsUiModel
 import com.example.tracker.data.mappers.toSeasonDbModel
-import com.example.tracker.data.network.models.player_season_response.GameMode
 import com.example.tracker.data.repository.TrackerRepositoryImpl
 import com.example.tracker.domain.models.PlayerInfoEntity
 import com.example.tracker.domain.usecases.GetCurrentSeasonUseCase
 import com.example.tracker.domain.usecases.GetPlayerByNameUseCase
 import com.example.tracker.domain.usecases.GetPlayerSeasonInfoUseCase
 import com.example.tracker.domain.usecases.GetSeasonListUseCase
-import com.example.tracker.ui.models.PlayerSeasonInfoUiModel
+import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -47,8 +46,8 @@ class GameFragmentViewModel(application: Application) :
     val isLoadingLD: LiveData<Boolean>
         get() = _isLoadingLD
 
-    private val _playerSeasonInfo = MutableLiveData<PlayerSeasonInfoUiModel?>()
-    val playerSeasonInfo: LiveData<PlayerSeasonInfoUiModel?>
+    private val _playerSeasonInfo = MutableLiveData<PlayerSeasonGameModeStatsUiModel?>()
+    val playerSeasonInfo: LiveData<PlayerSeasonGameModeStatsUiModel?>
         get() = _playerSeasonInfo
 
     private suspend fun loadPlayer(): PlayerInfoEntity? {
@@ -97,9 +96,13 @@ class GameFragmentViewModel(application: Application) :
             val playerInfo = loadPlayerDeferred.await()
             if (playerInfo != null) {
                 try {
-                    val playerSeasonInfo = getPlayerSeasonInfoUseCase(playerInfo.id, seasonID, GameMode.SOLO)
-                    _playerSeasonInfo.value = playerSeasonInfo.toPlayerSeasonInfoUiModel()
-                } catch (e: Exception) { }
+                    val playerSeasonInfo = getPlayerSeasonInfoUseCase(playerInfo.id, seasonID)
+                    _playerSeasonInfo.value = playerSeasonInfo.toPlayerSeasonGameModeStatsUiModel()
+                    Log.d(TAG, playerSeasonInfo.toString())
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error loading player season info", e)
+                    _errorRequestLD.value = true
+                }
             } else {
                 _isLoadingLD.value = false
             }

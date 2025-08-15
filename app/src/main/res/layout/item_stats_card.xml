@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardUseCompatPadding="true"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp">
+
+
+        <ImageView
+            android:id="@+id/iconStat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_helmet"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/titleStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Kills"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/valueStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                tools:text="23"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

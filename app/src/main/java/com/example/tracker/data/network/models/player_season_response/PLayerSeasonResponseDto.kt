@@ -1,87 +1,74 @@
 package com.example.tracker.data.network.models.player_season_response
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class PLayerSeasonResponseDto(
-    @SerialName("data")
+    @SerializedName("data")
     val data: PlayerSeasonAttributesDto
 )
 
-@Serializable
 data class PlayerSeasonAttributesDto(
-    @SerialName("attributes")
-    val attributes: PlayerSeasonGameModeStats
+    @SerializedName("attributes")
+    val attributes: PlayerSeasonGameModeStatsDto
 )
 
-@Serializable
-data class PlayerSeasonGameModeStats(
-    @SerialName("gameModeStats")
-    val gameModeStats: PlayerSeasonGameMode
+data class PlayerSeasonGameModeStatsDto(
+    @SerializedName("gameModeStats")
+    val gameModeStats: PlayerSeasonGameModeDto
 )
 
-@Serializable
-data class PlayerSeasonGameMode(
-    @SerialName("duo")
-    val duo: PlayerSeasonGameStats,
+data class PlayerSeasonGameModeDto(
+    @SerializedName("duo")
+    val duo: PlayerSeasonGameStatsDto,
     @SerializedName("duo-fpp")
-    val duoFpp: PlayerSeasonGameStats,
-    @SerialName("solo")
-    val solo: PlayerSeasonGameStats,
-    @SerialName("solo-fpp")
-    val soloFpp: PlayerSeasonGameStats,
-    @SerialName("squad")
-    val squad: PlayerSeasonGameStats,
-    @SerialName("squad-fpp")
-    val squadFpp: PlayerSeasonGameStats,
+    val duoFpp: PlayerSeasonGameStatsDto,
+    @SerializedName("solo")
+    val solo: PlayerSeasonGameStatsDto,
+    @SerializedName("solo-fpp")
+    val soloFpp: PlayerSeasonGameStatsDto,
+    @SerializedName("squad")
+    val squad: PlayerSeasonGameStatsDto,
+    @SerializedName("squad-fpp")
+    val squadFpp: PlayerSeasonGameStatsDto,
 )
 
-@Serializable
-data class PlayerSeasonGameStats(
-    @SerialName("assists")
+data class PlayerSeasonGameStatsDto(
+    @SerializedName("assists")
     val assists: Int,
-    @SerialName("dBNOs")
+    @SerializedName("dBNOs")
     val knocked: Int,
-    @SerialName("damageDealt")
+    @SerializedName("damageDealt")
     val damageDealt: Double,
-    @SerialName("headshotKills")
+    @SerializedName("headshotKills")
     val headshotKills: Int,
-    @SerialName("kills")
+    @SerializedName("kills")
     val kills: Int,
-    @SerialName("longestKill")
+    @SerializedName("longestKill")
     val longestKill: Double,
-    @SerialName("longestTimeSurvived")
+    @SerializedName("longestTimeSurvived")
     val longestTimeSurvived: Double,
-    @SerialName("mostSurvivalTime")
+    @SerializedName("mostSurvivalTime")
     val mostSurvivalTime: Double,
-    @SerialName("revives")
+    @SerializedName("revives")
     val revives: Int,
-    @SerialName("rideDistance")
+    @SerializedName("rideDistance")
     val rideDistance: Double,
-    @SerialName("roadKills")
+    @SerializedName("roadKills")
     val roadKills: Int,
-    @SerialName("roundMostKills")
+    @SerializedName("roundMostKills")
     val roundMostKills: Int,
-    @SerialName("roundsPlayed")
+    @SerializedName("roundsPlayed")
     val roundsPlayed: Int,
-    @SerialName("swimDistance")
+    @SerializedName("swimDistance")
     val swimDistance: Double,
-    @SerialName("timeSurvived")
+    @SerializedName("timeSurvived")
     val timeSurvived: Double,
-    @SerialName("top10s")
+    @SerializedName("top10s")
     val top10s: Int,
-    @SerialName("vehicleDestroys")
+    @SerializedName("vehicleDestroys")
     val vehicleDestroys: Int,
-    @SerialName("walkDistance")
+    @SerializedName("walkDistance")
     val walkDistance: Double,
-    @SerialName("wins")
+    @SerializedName("wins")
     val wins: Int
 )
-
-//TODO MOVE
-@Serializable
-enum class GameMode {
-    DUO, DUO_FPP, SOLO, SOLO_FPP, SQUAD, SQUAD_FPP
-}
