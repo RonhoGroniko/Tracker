@@ -15,6 +15,7 @@ import com.example.tracker.domain.usecases.GetCurrentSeasonUseCase
 import com.example.tracker.domain.usecases.GetPlayerByNameUseCase
 import com.example.tracker.domain.usecases.GetPlayerSeasonInfoUseCase
 import com.example.tracker.domain.usecases.GetSeasonListUseCase
+import com.example.tracker.ui.models.FullPlayerInfo
 import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -46,9 +47,9 @@ class GameFragmentViewModel(application: Application) :
     val isLoadingLD: LiveData<Boolean>
         get() = _isLoadingLD
 
-    private val _playerSeasonInfo = MutableLiveData<PlayerSeasonGameModeStatsUiModel?>()
-    val playerSeasonInfo: LiveData<PlayerSeasonGameModeStatsUiModel?>
-        get() = _playerSeasonInfo
+    private val _fullPlayerInfo = MutableLiveData<FullPlayerInfo?>()
+    val fullPlayerInfo: LiveData<FullPlayerInfo?>
+        get() = _fullPlayerInfo
 
     private suspend fun loadPlayer(): PlayerInfoEntity? {
         _errorRequestLD.value = false
@@ -97,8 +98,11 @@ class GameFragmentViewModel(application: Application) :
             if (playerInfo != null) {
                 try {
                     val playerSeasonInfo = getPlayerSeasonInfoUseCase(playerInfo.id, seasonID)
-                    _playerSeasonInfo.value = playerSeasonInfo.toPlayerSeasonGameModeStatsUiModel()
-                    Log.d(TAG, playerSeasonInfo.toString())
+                    _fullPlayerInfo.value = _fullPlayerInfo.value?.copy(
+                        name = playerInfo.name,
+                        stats = playerSeasonInfo.toPlayerSeasonGameModeStatsUiModel()
+                    ) ?: FullPlayerInfo(playerInfo.name, playerSeasonInfo.toPlayerSeasonGameModeStatsUiModel())
+                    Log.d(TAG, fullPlayerInfo.value.toString())
                 } catch (e: Exception) {
                     Log.e(TAG, "Error loading player season info", e)
                     _errorRequestLD.value = true
@@ -132,7 +136,7 @@ class GameFragmentViewModel(application: Application) :
     }
 
     fun resetPlayerSeasonInfo() {
-        _playerSeasonInfo.value = null
+        _fullPlayerInfo.value = null
     }
 
     companion object {

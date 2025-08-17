@@ -78,12 +78,12 @@ class GameFragment : Fragment() {
             }
             binding.textInputLayoutName.error = message
         }
-        viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
+        viewModel.fullPlayerInfo.observe(viewLifecycleOwner) {
             if (it != null) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.main_container,
-                        GameStatsFragment.newInstance(it)
+                        GameStatsFragment.newInstance(it.name, it.stats)
                     )
                     .addToBackStack(null)
                     .commit()

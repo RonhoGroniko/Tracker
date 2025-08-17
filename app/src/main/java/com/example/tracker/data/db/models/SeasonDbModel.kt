@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class SeasonDbModel(
     @PrimaryKey()
     val id: String,
+    val name: String,
     val isCurrentSeason: Boolean
 )

@@ -37,27 +37,101 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/slate_gray_alpha_30"
-                android:orientation="horizontal">
+                android:background="@drawable/rounded_rect_title"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/player_avatar_circle"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_helmet"
-                    tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:id="@+id/textViewTest"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    tools:text="QuantumUP" />
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/player_avatar_circle"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_helmet"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/textViewName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/aldrich"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        tools:text="QuantumUP" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayoutSeason"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_weight="1"
+                        android:hint="@string/season">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/seasonDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:ellipsize="end"
+                            android:focusable="false"
+                            android:fontFamily="@font/aldrich"
+                            android:hint="@string/season"
+                            android:inputType="none"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true"
+                            tools:listitem="Solo" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayoutMode"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1"
+                        android:hint="@string/mode">
+
+                        <AutoCompleteTextView
+                            android:id="@+id/modeDropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:ellipsize="end"
+                            android:focusable="false"
+                            android:fontFamily="@font/aldrich"
+                            android:hint="@string/mode"
+                            android:inputType="none"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true"
+                            tools:listitem="Solo"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -70,7 +144,7 @@
                 android:clipToPadding="false"
                 android:overScrollMode="never"
                 android:padding="16dp"
-                tools:listitem="@layout/item_stats_card"/>
+                tools:listitem="@layout/item_stats_card" />
 
         </LinearLayout>
 
