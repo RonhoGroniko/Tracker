@@ -5,6 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FullPlayerInfo(
-    val name: String,
+    val playerInfo: PlayerInfoUiModel,
     val stats: PlayerSeasonGameModeStatsUiModel
 ) : Parcelable

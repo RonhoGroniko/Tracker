@@ -14,18 +14,19 @@ import com.example.tracker.common.extentions.parcelable
 import com.example.tracker.data.mappers.toStatItems
 import com.example.tracker.databinding.FragmentGameStatsBinding
 import com.example.tracker.ui.adapters.StatsAdapter
+import com.example.tracker.ui.models.PlayerInfoUiModel
 import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
 
 private const val ARG_PLAYER_STATS = "playerStats"
-private const val ARG_PLAYER_NAME = "playerName"
+private const val ARG_PLAYER_INFO = "playerInfo"
 
 
 class GameStatsFragment : Fragment() {
 
     private val gameModes = GameMode.entries
     private var gameMode = GameMode.SOLO
-    private var playerName: String? = null
-    private var playerInfo: PlayerSeasonGameModeStatsUiModel? = null
+    private var playerInfo: PlayerInfoUiModel? = null
+    private var playerStats: PlayerSeasonGameModeStatsUiModel? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this)[GameStatsViewModel::class.java]
@@ -39,8 +40,8 @@ class GameStatsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            playerName = it.getString(ARG_PLAYER_NAME)
-            playerInfo = it.parcelable(ARG_PLAYER_STATS)
+            playerInfo = it.parcelable(ARG_PLAYER_INFO)
+            playerStats = it.parcelable(ARG_PLAYER_STATS)
         }
     }
 
@@ -51,17 +52,21 @@ class GameStatsFragment : Fragment() {
         _binding = FragmentGameStatsBinding.inflate(inflater, container, false)
         return binding.root
     }
+// TODO: ИЗМЕНИТЬ НА КВАДРАТЫ СТАТУ
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRv()
-        setupDropDown()
-        setupOnDropDownItemClickListener()
-        viewModel.seasons.observe(viewLifecycleOwner) {list ->
-            val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, list.map { it.name })
-            binding.seasonDropdown.setAdapter(adapter)
+        setupDropDowns()
+        setupDropDownModeItemClickListener()
+        setupDropDownSeasonItemClickListener()
+        viewModel.currentSeason.observe(viewLifecycleOwner) {
+            binding.seasonDropdown.setText(it)
         }
-
+        viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
+            playerStats = it
+            updateRV()
+        }
     }
 
     override fun onDestroyView() {
@@ -73,41 +78,58 @@ class GameStatsFragment : Fragment() {
         with(binding) {
             recyclerStats.layoutManager = GridLayoutManager(requireContext(), 3)
             recyclerStats.adapter =
-                StatsAdapter(playerInfo?.gameModeStats?.solo?.toStatItems() ?: emptyList())
-            textViewName.text = playerName
+                StatsAdapter(playerStats?.gameModeStats?.solo?.toStatItems() ?: emptyList())
+            textViewName.text = playerInfo?.name
         }
     }
 
-    private fun setupDropDown() {
+    private fun setupDropDowns() {
         val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, gameModes)
+        binding.modeDropdown.setText(gameMode.toString(
+        ))
         binding.modeDropdown.setAdapter(adapter)
+        viewModel.seasons.observe(viewLifecycleOwner) { list ->
+            val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, list.map { it.name })
+            binding.seasonDropdown.setAdapter(adapter)
+        }
     }
 
-    private fun setupOnDropDownItemClickListener() {
+    private fun setupDropDownSeasonItemClickListener() {
+        binding.seasonDropdown.setOnItemClickListener { parent, view, position, id ->
+            val seasonName = parent.getItemAtPosition(position) as String
+            viewModel.loadPlayerSeasonInfo(playerInfo?.id ?: "", seasonName)
+        }
+    }
+
+    private fun setupDropDownModeItemClickListener() {
         binding.modeDropdown.setOnItemClickListener { parent, view, position, id ->
             gameMode = parent.getItemAtPosition(position) as GameMode
-            val statsList = when (gameMode) {
-                GameMode.DUO -> playerInfo?.gameModeStats?.duo?.toStatItems() ?: emptyList()
-                GameMode.DUO_FPP -> playerInfo?.gameModeStats?.duoFpp?.toStatItems() ?: emptyList()
-                GameMode.SOLO -> playerInfo?.gameModeStats?.solo?.toStatItems() ?: emptyList()
-                GameMode.SOLO_FPP -> playerInfo?.gameModeStats?.soloFpp?.toStatItems() ?: emptyList()
-                GameMode.SQUAD -> playerInfo?.gameModeStats?.squad?.toStatItems() ?: emptyList()
-                GameMode.SQUAD_FPP -> playerInfo?.gameModeStats?.squadFpp?.toStatItems() ?: emptyList()
-            }
-            binding.recyclerStats.adapter = StatsAdapter(statsList)
+            updateRV()
         }
+    }
+
+    private fun updateRV() {
+        val statsList = when (gameMode) {
+            GameMode.DUO -> playerStats?.gameModeStats?.duo?.toStatItems() ?: emptyList()
+            GameMode.DUO_FPP -> playerStats?.gameModeStats?.duoFpp?.toStatItems() ?: emptyList()
+            GameMode.SOLO -> playerStats?.gameModeStats?.solo?.toStatItems() ?: emptyList()
+            GameMode.SOLO_FPP -> playerStats?.gameModeStats?.soloFpp?.toStatItems() ?: emptyList()
+            GameMode.SQUAD -> playerStats?.gameModeStats?.squad?.toStatItems() ?: emptyList()
+            GameMode.SQUAD_FPP -> playerStats?.gameModeStats?.squadFpp?.toStatItems() ?: emptyList()
+        }
+        binding.recyclerStats.adapter = StatsAdapter(statsList)
     }
 
     companion object {
 
         @JvmStatic
         fun newInstance(
-            playerName: String,
+            playerInfo: PlayerInfoUiModel,
             playerSeasonGameModeStatsUiModel: PlayerSeasonGameModeStatsUiModel
         ) =
             GameStatsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PLAYER_NAME, playerName)
+                    putParcelable(ARG_PLAYER_INFO, playerInfo)
                     putParcelable(ARG_PLAYER_STATS, playerSeasonGameModeStatsUiModel)
                 }
             }

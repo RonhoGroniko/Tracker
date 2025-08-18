@@ -8,13 +8,13 @@ import com.example.tracker.ui.models.SeasonInfoUiModel
 
 
 fun SeasonInfoEntity.toSeasonDbModel() = SeasonDbModel(
-    id = id,
+    seasonId = id,
     name = id.mapIdToName(),
     isCurrentSeason = isCurrentSeason
 )
 
 fun SeasonDbModel.toSeasonInfoEntity() = SeasonInfoEntity(
-    id = id,
+    id = seasonId,
     name = name,
     isCurrentSeason = isCurrentSeason
 )

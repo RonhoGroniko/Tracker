@@ -83,7 +83,7 @@ class GameFragment : Fragment() {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .replace(
                         R.id.main_container,
-                        GameStatsFragment.newInstance(it.name, it.stats)
+                        GameStatsFragment.newInstance(it.playerInfo, it.stats)
                     )
                     .addToBackStack(null)
                     .commit()

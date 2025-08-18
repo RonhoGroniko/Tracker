@@ -18,4 +18,7 @@ interface SeasonDao {
 
     @Query("SELECT * FROM Seasons WHERE isCurrentSeason = 1 LIMIT 1")
     suspend fun getCurrentSeason() : SeasonDbModel
+
+    @Query("SELECT * FROM seasons WHERE name = :seasonName")
+    suspend fun getSeasonByName(seasonName: String): SeasonDbModel
 }

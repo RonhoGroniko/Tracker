@@ -1,6 +1,5 @@
 package com.example.tracker.domain.models
 
-
 data class PlayerSeasonGameModeStatsEntity(
     val gameModeStats: PlayerSeasonGameModeEntity
 )
