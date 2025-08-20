@@ -23,8 +23,9 @@ private const val ARG_PLAYER_INFO = "playerInfo"
 
 class GameStatsFragment : Fragment() {
 
-    private val gameModes = GameMode.entries
-    private var gameMode = GameMode.SOLO
+    private lateinit var modeAdapter: ArrayAdapter<GameMode>
+    private lateinit var seasonAdapter: ArrayAdapter<String>
+
     private var playerInfo: PlayerInfoUiModel? = null
     private var playerStats: PlayerSeasonGameModeStatsUiModel? = null
 
@@ -39,6 +40,8 @@ class GameStatsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.getCurrentSeason()
+        viewModel.getSeasons()
         arguments?.let {
             playerInfo = it.parcelable(ARG_PLAYER_INFO)
             playerStats = it.parcelable(ARG_PLAYER_STATS)
@@ -52,7 +55,6 @@ class GameStatsFragment : Fragment() {
         _binding = FragmentGameStatsBinding.inflate(inflater, container, false)
         return binding.root
     }
-// TODO: ИЗМЕНИТЬ НА КВАДРАТЫ СТАТУ
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,11 +63,11 @@ class GameStatsFragment : Fragment() {
         setupDropDownModeItemClickListener()
         setupDropDownSeasonItemClickListener()
         viewModel.currentSeason.observe(viewLifecycleOwner) {
-            binding.seasonDropdown.setText(it)
+            binding.seasonDropdown.setText(it, false)
         }
         viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
             playerStats = it
-            updateRV()
+            viewModel.gameMode.observe(viewLifecycleOwner) { gameMode -> updateRV(gameMode) }
         }
     }
 
@@ -84,13 +86,22 @@ class GameStatsFragment : Fragment() {
     }
 
     private fun setupDropDowns() {
-        val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, gameModes)
-        binding.modeDropdown.setText(gameMode.toString(
-        ))
-        binding.modeDropdown.setAdapter(adapter)
+        modeAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, mutableListOf())
+        seasonAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, mutableListOf())
+
+        binding.modeDropdown.setAdapter(modeAdapter)
+        binding.seasonDropdown.setAdapter(seasonAdapter)
+
+        viewModel.gameModeList.observe(viewLifecycleOwner) {
+            modeAdapter.clear()
+            modeAdapter.addAll(it)
+        }
+        viewModel.gameMode.observe(viewLifecycleOwner) {
+            binding.modeDropdown.setText(it.toString(), false)
+        }
         viewModel.seasons.observe(viewLifecycleOwner) { list ->
-            val adapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, list.map { it.name })
-            binding.seasonDropdown.setAdapter(adapter)
+            seasonAdapter.clear()
+            seasonAdapter.addAll(list.map { it.name })
         }
     }
 
@@ -103,12 +114,13 @@ class GameStatsFragment : Fragment() {
 
     private fun setupDropDownModeItemClickListener() {
         binding.modeDropdown.setOnItemClickListener { parent, view, position, id ->
-            gameMode = parent.getItemAtPosition(position) as GameMode
-            updateRV()
+            val gameMode = parent.getItemAtPosition(position) as GameMode
+            viewModel.setGameMode(gameMode)
+            updateRV(gameMode)
         }
     }
 
-    private fun updateRV() {
+    private fun updateRV(gameMode: GameMode) {
         val statsList = when (gameMode) {
             GameMode.DUO -> playerStats?.gameModeStats?.duo?.toStatItems() ?: emptyList()
             GameMode.DUO_FPP -> playerStats?.gameModeStats?.duoFpp?.toStatItems() ?: emptyList()

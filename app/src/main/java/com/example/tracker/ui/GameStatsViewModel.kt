@@ -6,6 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.tracker.common.enums.GameMode
 import com.example.tracker.data.mappers.toPlayerSeasonGameModeStatsUiModel
 import com.example.tracker.data.mappers.toSeasonInfoUiModel
 import com.example.tracker.data.repository.TrackerRepositoryImpl
@@ -27,6 +28,15 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     private val getSeasonByNameUseCase = GetSeasonByNameUseCase(repository)
 
 
+    private val _gameModeList = MutableLiveData<List<GameMode>>(GameMode.entries)
+    val gameModeList: LiveData<List<GameMode>>
+        get() = _gameModeList
+
+    private val _gameMode = MutableLiveData<GameMode>()
+    val gameMode: LiveData<GameMode>
+        get() = _gameMode
+
+
     private val _seasons = MutableLiveData<List<SeasonInfoUiModel>>()
     val seasons: LiveData<List<SeasonInfoUiModel>>
         get() = _seasons
@@ -39,7 +49,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     val playerSeasonInfo: LiveData<PlayerSeasonGameModeStatsUiModel>
         get() = _playerSeasonInfo
 
-    private fun getSeasons() {
+   fun getSeasons() {
         viewModelScope.launch {
             try {
                 _seasons.value = getSeasonListUseCase().map { it.toSeasonInfoUiModel() }
@@ -49,7 +59,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    private fun getCurrentSeason() {
+    fun getCurrentSeason() {
         viewModelScope.launch {
             try {
                 _currentSeason.value = getCurrentSeasonUseCase().name
@@ -78,8 +88,11 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
         }
     }
 
+    fun setGameMode(gameMode: GameMode) {
+        _gameMode.value = gameMode
+    }
+
     init {
-        getSeasons()
-        getCurrentSeason()
+        setGameMode(GameMode.SOLO)
     }
 }
