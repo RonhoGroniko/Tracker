@@ -13,6 +13,8 @@ import com.example.tracker.common.enums.GameMode
 import com.example.tracker.common.extentions.parcelable
 import com.example.tracker.data.mappers.toStatItems
 import com.example.tracker.databinding.FragmentGameStatsBinding
+import com.example.tracker.ui.adapters.GameModeAdapter
+import com.example.tracker.ui.adapters.SeasonAdapter
 import com.example.tracker.ui.adapters.StatsAdapter
 import com.example.tracker.ui.models.PlayerInfoUiModel
 import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
@@ -23,8 +25,8 @@ private const val ARG_PLAYER_INFO = "playerInfo"
 
 class GameStatsFragment : Fragment() {
 
-    private lateinit var modeAdapter: ArrayAdapter<GameMode>
-    private lateinit var seasonAdapter: ArrayAdapter<String>
+    private lateinit var modeAdapter: GameModeAdapter
+    private lateinit var seasonAdapter: SeasonAdapter
 
     private var playerInfo: PlayerInfoUiModel? = null
     private var playerStats: PlayerSeasonGameModeStatsUiModel? = null
@@ -40,8 +42,6 @@ class GameStatsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getCurrentSeason()
-        viewModel.getSeasons()
         arguments?.let {
             playerInfo = it.parcelable(ARG_PLAYER_INFO)
             playerStats = it.parcelable(ARG_PLAYER_STATS)
@@ -62,13 +62,13 @@ class GameStatsFragment : Fragment() {
         setupDropDowns()
         setupDropDownModeItemClickListener()
         setupDropDownSeasonItemClickListener()
-        viewModel.currentSeason.observe(viewLifecycleOwner) {
-            binding.seasonDropdown.setText(it, false)
+        viewModel.currentSeason.observe(viewLifecycleOwner) { currentSeason ->
+            binding.seasonDropdown.setText(currentSeason, false)
         }
         viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
             playerStats = it
-            viewModel.gameMode.observe(viewLifecycleOwner) { gameMode -> updateRV(gameMode) }
         }
+        viewModel.gameMode.observe(viewLifecycleOwner) { gameMode -> updateRV(gameMode) }
     }
 
     override fun onDestroyView() {
@@ -86,22 +86,28 @@ class GameStatsFragment : Fragment() {
     }
 
     private fun setupDropDowns() {
-        modeAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, mutableListOf())
-        seasonAdapter = ArrayAdapter(requireContext(), R.layout.item_dropdown, mutableListOf())
+        modeAdapter = GameModeAdapter(requireContext(), R.layout.item_dropdown, GameMode.entries)
+        seasonAdapter = SeasonAdapter(requireContext(), R.layout.item_dropdown, emptyList())
 
         binding.modeDropdown.setAdapter(modeAdapter)
         binding.seasonDropdown.setAdapter(seasonAdapter)
 
         viewModel.gameModeList.observe(viewLifecycleOwner) {
-            modeAdapter.clear()
-            modeAdapter.addAll(it)
+            modeAdapter.setItems(it)
+            modeAdapter.filter.filter(null)
         }
         viewModel.gameMode.observe(viewLifecycleOwner) {
             binding.modeDropdown.setText(it.toString(), false)
+            modeAdapter.filter.filter(null)
         }
         viewModel.seasons.observe(viewLifecycleOwner) { list ->
-            seasonAdapter.clear()
-            seasonAdapter.addAll(list.map { it.name })
+            seasonAdapter.setItems(list.map { it.name })
+            seasonAdapter.filter.filter(null)
+        }
+
+        binding.seasonDropdown.setOnClickListener {
+            binding.seasonDropdown.setText(binding.seasonDropdown.text)
+            binding.seasonDropdown.showDropDown()
         }
     }
 

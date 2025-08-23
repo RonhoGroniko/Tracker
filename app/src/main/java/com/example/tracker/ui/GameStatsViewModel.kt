@@ -36,7 +36,6 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     val gameMode: LiveData<GameMode>
         get() = _gameMode
 
-
     private val _seasons = MutableLiveData<List<SeasonInfoUiModel>>()
     val seasons: LiveData<List<SeasonInfoUiModel>>
         get() = _seasons
@@ -49,7 +48,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     val playerSeasonInfo: LiveData<PlayerSeasonGameModeStatsUiModel>
         get() = _playerSeasonInfo
 
-   fun getSeasons() {
+   private fun getSeasons() {
         viewModelScope.launch {
             try {
                 _seasons.value = getSeasonListUseCase().map { it.toSeasonInfoUiModel() }
@@ -59,7 +58,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    fun getCurrentSeason() {
+    private fun getCurrentSeason() {
         viewModelScope.launch {
             try {
                 _currentSeason.value = getCurrentSeasonUseCase().name
@@ -93,6 +92,9 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     }
 
     init {
+        Log.d("tagView", this.toString())
+        getCurrentSeason()
+        getSeasons()
         setGameMode(GameMode.SOLO)
     }
 }

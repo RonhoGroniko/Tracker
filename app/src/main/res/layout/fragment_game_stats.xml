@@ -83,13 +83,13 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
+                        android:layout_marginEnd="4dp"
                         android:layout_weight="1"
                         android:hint="@string/season">
 
-                        <AutoCompleteTextView
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/seasonDropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -97,11 +97,11 @@
                             android:ellipsize="end"
                             android:focusable="false"
                             android:fontFamily="@font/aldrich"
-                            android:hint="@string/season"
+                            android:hint="@string/mode"
                             android:inputType="none"
                             android:scrollHorizontally="true"
                             android:singleLine="true"
-                            tools:listitem="Solo" />
+                            tools:listitem="Solo"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -115,7 +115,7 @@
                         android:layout_weight="1"
                         android:hint="@string/mode">
 
-                        <AutoCompleteTextView
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/modeDropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
