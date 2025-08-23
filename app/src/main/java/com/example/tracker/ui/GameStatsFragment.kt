@@ -1,10 +1,10 @@
 package com.example.tracker.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -101,13 +101,9 @@ class GameStatsFragment : Fragment() {
             modeAdapter.filter.filter(null)
         }
         viewModel.seasons.observe(viewLifecycleOwner) { list ->
+            Log.d("GameStatsFragment", "Seasons from VM: $list")
             seasonAdapter.setItems(list.map { it.name })
             seasonAdapter.filter.filter(null)
-        }
-
-        binding.seasonDropdown.setOnClickListener {
-            binding.seasonDropdown.setText(binding.seasonDropdown.text)
-            binding.seasonDropdown.showDropDown()
         }
     }
 

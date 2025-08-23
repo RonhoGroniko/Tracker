@@ -97,11 +97,10 @@
                             android:ellipsize="end"
                             android:focusable="false"
                             android:fontFamily="@font/aldrich"
-                            android:hint="@string/mode"
+                            android:hint="@string/season"
                             android:inputType="none"
                             android:scrollHorizontally="true"
-                            android:singleLine="true"
-                            tools:listitem="Solo"/>
+                            android:singleLine="true"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout

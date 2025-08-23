@@ -19,7 +19,7 @@ import com.example.tracker.ui.models.SeasonInfoUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class GameStatsViewModel(application: Application): AndroidViewModel(application = application) {
+class GameStatsViewModel(application: Application) : AndroidViewModel(application = application) {
 
     private val repository = TrackerRepositoryImpl(application)
     private val getSeasonListUseCase = GetSeasonListUseCase(repository)
@@ -44,14 +44,22 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     val currentSeason: LiveData<String>
         get() = _currentSeason
 
+    private val _selectedSeason = MutableLiveData<String>()
+    val selectedSeason: LiveData<String>
+        get() = _selectedSeason
+
     private val _playerSeasonInfo = MutableLiveData<PlayerSeasonGameModeStatsUiModel>()
     val playerSeasonInfo: LiveData<PlayerSeasonGameModeStatsUiModel>
         get() = _playerSeasonInfo
 
-   private fun getSeasons() {
+    private fun getSeasons() {
         viewModelScope.launch {
             try {
                 _seasons.value = getSeasonListUseCase().map { it.toSeasonInfoUiModel() }
+                    .map {
+                        it.copy(isSelected = it.name == _selectedSeason.value)
+                    }
+                Log.d("GameStatsViewModel", _seasons.value.toString())
             } catch (e: Exception) {
                 Log.d("GameStatsViewModel", e.message.toString())
             }
@@ -63,7 +71,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
             try {
                 _currentSeason.value = getCurrentSeasonUseCase().name
             } catch (e: Exception) {
-                Log.d("GameStatsViewModel", e.message.toString())
+                Log.e("GameStatsViewModel", e.message.toString(), e)
             }
         }
     }
@@ -79,7 +87,7 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
     private fun getStats(playerId: String, seasonId: String) {
         viewModelScope.launch {
             try {
-                val playerStats = getPlayerSeasonInfoUseCase(playerId,  seasonId)
+                val playerStats = getPlayerSeasonInfoUseCase(playerId, seasonId)
                 _playerSeasonInfo.value = playerStats.toPlayerSeasonGameModeStatsUiModel()
             } catch (e: Exception) {
                 Log.d("GameStatsViewModel", e.message.toString())
@@ -91,8 +99,14 @@ class GameStatsViewModel(application: Application): AndroidViewModel(application
         _gameMode.value = gameMode
     }
 
+    fun setSelectedSeason(seasonName: String) {
+        _selectedSeason.value = seasonName
+        _seasons.value = _seasons.value?.map {
+            it.copy(isSelected = it.name == seasonName)
+        }
+    }
+
     init {
-        Log.d("tagView", this.toString())
         getCurrentSeason()
         getSeasons()
         setGameMode(GameMode.SOLO)

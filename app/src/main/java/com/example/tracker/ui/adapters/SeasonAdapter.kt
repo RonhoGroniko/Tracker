@@ -6,11 +6,12 @@ import android.widget.ArrayAdapter
 class SeasonAdapter(
     context: Context,
     resource: Int,
-    private var items: List<String>
-) : ArrayAdapter<String>(context, resource, items) {
+    items: List<String>
+) : ArrayAdapter<String>(context, resource, ArrayList(items)) {
 
     fun setItems(newItems: List<String>) {
-        items = newItems
+        clear()
+        addAll(newItems)
         notifyDataSetChanged()
     }
 }
