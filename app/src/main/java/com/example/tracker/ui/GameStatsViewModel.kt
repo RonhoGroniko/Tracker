@@ -69,7 +69,11 @@ class GameStatsViewModel(application: Application) : AndroidViewModel(applicatio
     private fun getCurrentSeason() {
         viewModelScope.launch {
             try {
-                _currentSeason.value = getCurrentSeasonUseCase().name
+                val current = getCurrentSeasonUseCase().name
+                _currentSeason.value = current
+                if (_selectedSeason.value.isNullOrEmpty()) {
+                    setSelectedSeason(current)
+                }
             } catch (e: Exception) {
                 Log.e("GameStatsViewModel", e.message.toString(), e)
             }
@@ -101,9 +105,12 @@ class GameStatsViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setSelectedSeason(seasonName: String) {
         _selectedSeason.value = seasonName
-        _seasons.value = _seasons.value?.map {
-            it.copy(isSelected = it.name == seasonName)
+        _seasons.value?.let { seasons ->
+            _seasons.value = seasons.map {
+                it.copy(isSelected = it.name == seasonName)
+            }
         }
+        Log.d("GameStatsViewModel",  "setSelected" + _seasons.value.toString())
     }
 
     init {

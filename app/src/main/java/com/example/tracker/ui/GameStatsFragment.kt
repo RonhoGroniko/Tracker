@@ -62,8 +62,9 @@ class GameStatsFragment : Fragment() {
         setupDropDowns()
         setupDropDownModeItemClickListener()
         setupDropDownSeasonItemClickListener()
-        viewModel.currentSeason.observe(viewLifecycleOwner) { currentSeason ->
-            binding.seasonDropdown.setText(currentSeason, false)
+        viewModel.selectedSeason.observe(viewLifecycleOwner) {
+            Log.d(TAG, it)
+            binding.seasonDropdown.setText(it, false)
         }
         viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
             playerStats = it
@@ -101,7 +102,7 @@ class GameStatsFragment : Fragment() {
             modeAdapter.filter.filter(null)
         }
         viewModel.seasons.observe(viewLifecycleOwner) { list ->
-            Log.d("GameStatsFragment", "Seasons from VM: $list")
+            Log.d(TAG, "Seasons from VM: $list")
             seasonAdapter.setItems(list.map { it.name })
             seasonAdapter.filter.filter(null)
         }
@@ -110,6 +111,7 @@ class GameStatsFragment : Fragment() {
     private fun setupDropDownSeasonItemClickListener() {
         binding.seasonDropdown.setOnItemClickListener { parent, view, position, id ->
             val seasonName = parent.getItemAtPosition(position) as String
+            viewModel.setSelectedSeason(seasonName)
             viewModel.loadPlayerSeasonInfo(playerInfo?.id ?: "", seasonName)
         }
     }
@@ -135,6 +137,8 @@ class GameStatsFragment : Fragment() {
     }
 
     companion object {
+
+        private const val TAG = "GameStatsFragment"
 
         @JvmStatic
         fun newInstance(
