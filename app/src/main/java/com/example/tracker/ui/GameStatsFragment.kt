@@ -46,6 +46,7 @@ class GameStatsFragment : Fragment() {
             playerInfo = it.parcelable(ARG_PLAYER_INFO)
             playerStats = it.parcelable(ARG_PLAYER_STATS)
         }
+        viewModel.initPlayer(playerInfo?.id ?: "")
     }
 
     override fun onCreateView(
@@ -62,14 +63,7 @@ class GameStatsFragment : Fragment() {
         setupDropDowns()
         setupDropDownModeItemClickListener()
         setupDropDownSeasonItemClickListener()
-        viewModel.selectedSeason.observe(viewLifecycleOwner) {
-            Log.d(TAG, it)
-            binding.seasonDropdown.setText(it, false)
-        }
-        viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
-            playerStats = it
-        }
-        viewModel.gameMode.observe(viewLifecycleOwner) { gameMode -> updateRV(gameMode) }
+        observeViewModel()
     }
 
     override fun onDestroyView() {
@@ -77,11 +71,24 @@ class GameStatsFragment : Fragment() {
         _binding = null
     }
 
+    private fun observeViewModel() {
+        viewModel.selectedSeason.observe(viewLifecycleOwner) {
+            Log.d(TAG, it)
+            binding.seasonDropdown.setText(it, false)
+        }
+        viewModel.playerSeasonInfo.observe(viewLifecycleOwner) {
+            playerStats = it
+        }
+        viewModel.currentStats.observe(viewLifecycleOwner) { statsList ->
+            binding.recyclerStats.adapter = StatsAdapter(statsList)
+        }
+    }
+
     private fun setupRv() {
         with(binding) {
             recyclerStats.layoutManager = GridLayoutManager(requireContext(), 3)
             recyclerStats.adapter =
-                StatsAdapter(playerStats?.gameModeStats?.solo?.toStatItems() ?: emptyList())
+                StatsAdapter(playerStats?.gameModeStats?.soloFpp?.toStatItems() ?: emptyList())
             textViewName.text = playerInfo?.name
         }
     }
@@ -112,7 +119,6 @@ class GameStatsFragment : Fragment() {
         binding.seasonDropdown.setOnItemClickListener { parent, view, position, id ->
             val seasonName = parent.getItemAtPosition(position) as String
             viewModel.setSelectedSeason(seasonName)
-            viewModel.loadPlayerSeasonInfo(playerInfo?.id ?: "", seasonName)
         }
     }
 
@@ -120,20 +126,7 @@ class GameStatsFragment : Fragment() {
         binding.modeDropdown.setOnItemClickListener { parent, view, position, id ->
             val gameMode = parent.getItemAtPosition(position) as GameMode
             viewModel.setGameMode(gameMode)
-            updateRV(gameMode)
         }
-    }
-
-    private fun updateRV(gameMode: GameMode) {
-        val statsList = when (gameMode) {
-            GameMode.DUO -> playerStats?.gameModeStats?.duo?.toStatItems() ?: emptyList()
-            GameMode.DUO_FPP -> playerStats?.gameModeStats?.duoFpp?.toStatItems() ?: emptyList()
-            GameMode.SOLO -> playerStats?.gameModeStats?.solo?.toStatItems() ?: emptyList()
-            GameMode.SOLO_FPP -> playerStats?.gameModeStats?.soloFpp?.toStatItems() ?: emptyList()
-            GameMode.SQUAD -> playerStats?.gameModeStats?.squad?.toStatItems() ?: emptyList()
-            GameMode.SQUAD_FPP -> playerStats?.gameModeStats?.squadFpp?.toStatItems() ?: emptyList()
-        }
-        binding.recyclerStats.adapter = StatsAdapter(statsList)
     }
 
     companion object {
