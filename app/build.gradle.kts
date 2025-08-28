@@ -55,6 +55,10 @@ android {
 
 dependencies {
 
+    implementation(libs.dagger)
+    ksp (libs.dagger.compiler)
+
+
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.okhttp)
