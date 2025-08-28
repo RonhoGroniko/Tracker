@@ -1,8 +1,11 @@
 package com.example.tracker.data.repository
 
 import android.app.Application
-import android.util.Log
-import com.example.tracker.data.db.AppDatabase
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
+import com.example.tracker.data.db.PlayerDao
+import com.example.tracker.data.db.PlayerStatsDao
+import com.example.tracker.data.db.SeasonDao
 import com.example.tracker.data.mappers.toPlayerDbModel
 import com.example.tracker.data.mappers.toPlayerInfoEntity
 import com.example.tracker.data.mappers.toPlayerSeasonGameModeStatsEntity
@@ -10,18 +13,21 @@ import com.example.tracker.data.mappers.toPlayerStatsDbModel
 import com.example.tracker.data.mappers.toSeasonDbModel
 import com.example.tracker.data.mappers.toSeasonInfoEntity
 import com.example.tracker.data.mappers.toSeasonInfoEntityList
-import com.example.tracker.data.network.ApiFactory
+import com.example.tracker.data.network.ApiService
+import com.example.tracker.data.workers.RefreshSeasonsWorker
 import com.example.tracker.domain.models.PlayerInfoEntity
 import com.example.tracker.domain.models.PlayerSeasonGameModeStatsEntity
 import com.example.tracker.domain.models.SeasonInfoEntity
 import com.example.tracker.domain.repository.TrackerRepository
+import javax.inject.Inject
 
-class TrackerRepositoryImpl(application: Application): TrackerRepository {
-
-    private val apiService = ApiFactory.apiService
-    private val seasonDao = AppDatabase.getInstance(application).seasonDao()
-    private val playerDao = AppDatabase.getInstance(application).playerDao()
-    private val playerStatsDao = AppDatabase.getInstance(application).playerStatsDao()
+class TrackerRepositoryImpl @Inject constructor (
+    private val application: Application,
+    private val apiService: ApiService,
+    private val seasonDao: SeasonDao,
+    private val playerDao: PlayerDao,
+    private val playerStatsDao: PlayerStatsDao
+): TrackerRepository {
 
     override suspend fun getPlayer(playerName: String): PlayerInfoEntity {
         val cachedPlayer = playerDao.getPlayerByName(playerName)
@@ -67,5 +73,14 @@ class TrackerRepositoryImpl(application: Application): TrackerRepository {
 
     override suspend fun addPlayer(player: PlayerInfoEntity) {
         playerDao.addPlayer(player.toPlayerDbModel())
+    }
+
+    override suspend fun loadSeasons() {
+        WorkManager.getInstance(application)
+            .enqueueUniquePeriodicWork(
+                RefreshSeasonsWorker.NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                RefreshSeasonsWorker.makeRequest()
+            )
     }
 }

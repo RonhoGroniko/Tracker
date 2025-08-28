@@ -1,5 +1,6 @@
 package com.example.tracker.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,12 +19,20 @@ import com.example.tracker.ui.adapters.SeasonAdapter
 import com.example.tracker.ui.adapters.StatsAdapter
 import com.example.tracker.ui.models.PlayerInfoUiModel
 import com.example.tracker.ui.models.PlayerSeasonGameModeStatsUiModel
+import javax.inject.Inject
 
 private const val ARG_PLAYER_STATS = "playerStats"
 private const val ARG_PLAYER_INFO = "playerInfo"
 
 
 class GameStatsFragment : Fragment() {
+
+    private val component by lazy {
+        (requireActivity().application as TrackerApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     private lateinit var modeAdapter: GameModeAdapter
     private lateinit var seasonAdapter: SeasonAdapter
@@ -32,13 +41,18 @@ class GameStatsFragment : Fragment() {
     private var playerStats: PlayerSeasonGameModeStatsUiModel? = null
 
     private val viewModel by lazy {
-        ViewModelProvider(this)[GameStatsViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[GameStatsViewModel::class.java]
     }
 
     private var _binding: FragmentGameStatsBinding? = null
     private val binding: FragmentGameStatsBinding
         get() = _binding ?: throw RuntimeException("FragmentGameStatsBinding == null")
 
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

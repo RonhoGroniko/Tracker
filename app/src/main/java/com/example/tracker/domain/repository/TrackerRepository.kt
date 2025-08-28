@@ -21,4 +21,6 @@ interface TrackerRepository {
     suspend fun addPlayerStats(playerId: String, seasonId: String, playerStats: PlayerSeasonGameModeStatsEntity)
 
     suspend fun addPlayer(player: PlayerInfoEntity)
+
+    suspend fun loadSeasons()
 }

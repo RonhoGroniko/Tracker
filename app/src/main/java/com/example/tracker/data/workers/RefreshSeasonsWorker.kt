@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.ListenableWorker
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
@@ -11,6 +12,7 @@ import androidx.work.WorkerParameters
 import com.example.tracker.domain.usecases.AddSeasonUseCase
 import com.example.tracker.domain.usecases.GetSeasonListUseCase
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class RefreshSeasonsWorker(
     context: Context,
@@ -31,8 +33,25 @@ class RefreshSeasonsWorker(
         }
     }
 
+    class Factory @Inject constructor(
+        private val getSeasonListUseCase: GetSeasonListUseCase,
+        private val addSeasonUseCase: AddSeasonUseCase
+    ): ChildWorkerFactory {
+
+        override fun create(
+            context: Context,
+            workerParameters: WorkerParameters
+        ): ListenableWorker = RefreshSeasonsWorker(
+            context = context,
+            workerParameters = workerParameters,
+            getSeasonListUseCase = getSeasonListUseCase,
+            addSeasonUseCase = addSeasonUseCase
+        )
+    }
+
     companion object {
 
+        const val NAME = "RefreshSeasonsWorker"
         private const val TAG = "RefreshSeasonsWorker"
 
         fun makeRequest(): PeriodicWorkRequest {
