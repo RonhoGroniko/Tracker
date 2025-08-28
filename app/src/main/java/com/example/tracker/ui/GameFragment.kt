@@ -1,5 +1,6 @@
 package com.example.tracker.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,18 +15,31 @@ import com.example.tracker.R
 import com.example.tracker.common.extentions.parcelable
 import com.example.tracker.databinding.FragmentGameBinding
 import com.example.tracker.ui.models.GameName
+import javax.inject.Inject
 
 private const val ARG_GAME_NAME = "GAME_NAME"
 
 class GameFragment : Fragment() {
 
+    private val component by lazy {
+        (requireActivity().application as TrackerApp).component
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[GameFragmentViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[GameViewModel::class.java]
     }
     private var _binding: FragmentGameBinding? = null
     private val binding: FragmentGameBinding
         get() = _binding ?: throw RuntimeException("FragmentGameBinding == null")
     private var gameName: GameName? = null
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,17 +1,15 @@
 package com.example.tracker.ui
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tracker.common.enums.GameMode
 import com.example.tracker.data.mappers.toPlayerSeasonGameModeStatsUiModel
 import com.example.tracker.data.mappers.toSeasonInfoUiModel
 import com.example.tracker.data.mappers.toStatItems
-import com.example.tracker.data.repository.TrackerRepositoryImpl
 import com.example.tracker.domain.usecases.GetCurrentSeasonUseCase
 import com.example.tracker.domain.usecases.GetPlayerSeasonInfoUseCase
 import com.example.tracker.domain.usecases.GetSeasonByNameUseCase
@@ -21,15 +19,14 @@ import com.example.tracker.ui.models.SeasonInfoUiModel
 import com.example.tracker.ui.models.StatItemUiModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GameStatsViewModel(application: Application) : AndroidViewModel(application = application) {
-
-    private val repository = TrackerRepositoryImpl(application)
-    private val getSeasonListUseCase = GetSeasonListUseCase(repository)
-    private val getCurrentSeasonUseCase = GetCurrentSeasonUseCase(repository)
-    private val getPlayerSeasonInfoUseCase = GetPlayerSeasonInfoUseCase(repository)
-    private val getSeasonByNameUseCase = GetSeasonByNameUseCase(repository)
-
+class GameStatsViewModel @Inject constructor(
+    private val getSeasonListUseCase: GetSeasonListUseCase,
+    private val getCurrentSeasonUseCase: GetCurrentSeasonUseCase,
+    private val getPlayerSeasonInfoUseCase: GetPlayerSeasonInfoUseCase,
+    private val getSeasonByNameUseCase: GetSeasonByNameUseCase
+) : ViewModel() {
 
     private var playerId: String? = null
 

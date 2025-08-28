@@ -1,34 +1,32 @@
 package com.example.tracker.ui
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tracker.data.mappers.toPlayerInfoUiModel
 import com.example.tracker.data.mappers.toPlayerSeasonGameModeStatsUiModel
-import com.example.tracker.data.repository.TrackerRepositoryImpl
 import com.example.tracker.domain.models.PlayerInfoEntity
 import com.example.tracker.domain.usecases.AddPlayerStatsUseCase
 import com.example.tracker.domain.usecases.AddPlayerUseCase
 import com.example.tracker.domain.usecases.GetCurrentSeasonUseCase
 import com.example.tracker.domain.usecases.GetPlayerByNameUseCase
 import com.example.tracker.domain.usecases.GetPlayerSeasonInfoUseCase
+import com.example.tracker.domain.usecases.LoadSeasonsUseCase
 import com.example.tracker.ui.models.FullPlayerInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GameFragmentViewModel(application: Application) :
-    AndroidViewModel(application = application) {
-
-    private val repository = TrackerRepositoryImpl(application)
-
-    private val addPlayerUseCase = AddPlayerUseCase(repository)
-    private val addPlayerStatsUseCase = AddPlayerStatsUseCase(repository)
-    private val getPlayerByNameUseCase = GetPlayerByNameUseCase(repository)
-    private val getCurrentSeasonUseCase = GetCurrentSeasonUseCase(repository)
-    private val getPlayerSeasonInfoUseCase = GetPlayerSeasonInfoUseCase(repository)
+class GameViewModel @Inject constructor (
+    private val loadSeasonsUseCase: LoadSeasonsUseCase,
+    private val addPlayerUseCase: AddPlayerUseCase,
+    private val addPlayerStatsUseCase: AddPlayerStatsUseCase,
+    private val getPlayerByNameUseCase: GetPlayerByNameUseCase,
+    private val getCurrentSeasonUseCase: GetCurrentSeasonUseCase,
+    private val getPlayerSeasonInfoUseCase: GetPlayerSeasonInfoUseCase,
+) : ViewModel() {
 
     private val _inputText = MutableLiveData<String>()
     val inputText: LiveData<String>
@@ -132,6 +130,12 @@ class GameFragmentViewModel(application: Application) :
 
     fun resetPlayerSeasonInfo() {
         _fullPlayerInfo.value = null
+    }
+
+    init {
+        viewModelScope.launch {
+            loadSeasonsUseCase()
+        }
     }
 
     companion object {
