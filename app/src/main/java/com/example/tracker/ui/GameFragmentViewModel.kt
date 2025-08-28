@@ -12,11 +12,9 @@ import com.example.tracker.data.repository.TrackerRepositoryImpl
 import com.example.tracker.domain.models.PlayerInfoEntity
 import com.example.tracker.domain.usecases.AddPlayerStatsUseCase
 import com.example.tracker.domain.usecases.AddPlayerUseCase
-import com.example.tracker.domain.usecases.AddSeasonUseCase
 import com.example.tracker.domain.usecases.GetCurrentSeasonUseCase
 import com.example.tracker.domain.usecases.GetPlayerByNameUseCase
 import com.example.tracker.domain.usecases.GetPlayerSeasonInfoUseCase
-import com.example.tracker.domain.usecases.GetSeasonListUseCase
 import com.example.tracker.ui.models.FullPlayerInfo
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -28,9 +26,7 @@ class GameFragmentViewModel(application: Application) :
 
     private val addPlayerUseCase = AddPlayerUseCase(repository)
     private val addPlayerStatsUseCase = AddPlayerStatsUseCase(repository)
-    private val addSeasonUseCase = AddSeasonUseCase(repository)
     private val getPlayerByNameUseCase = GetPlayerByNameUseCase(repository)
-    private val getSeasonListUseCase = GetSeasonListUseCase(repository)
     private val getCurrentSeasonUseCase = GetCurrentSeasonUseCase(repository)
     private val getPlayerSeasonInfoUseCase = GetPlayerSeasonInfoUseCase(repository)
 
@@ -69,18 +65,6 @@ class GameFragmentViewModel(application: Application) :
             Log.d(TAG, e.message.toString())
             _errorRequestLD.value = true
             return null
-        }
-    }
-
-    fun loadSeasons() {
-        viewModelScope.launch {
-            try {
-                getSeasonListUseCase().forEach {
-                    addSeasonUseCase(it)
-                }
-            } catch (e: Exception) {
-                Log.d(TAG, e.message.toString())
-            }
         }
     }
 
