@@ -7,4 +7,7 @@
     <string name="marvel_rivals">Marvel Rivals</string>
     <string name="search">Search:</string>
     <string name="error_input_name">Invalid name input</string>
+    <string name="invalid_name">Invalid name</string>
+    <string name="mode">Mode</string>
+    <string name="season">Season</string>
 </resources>

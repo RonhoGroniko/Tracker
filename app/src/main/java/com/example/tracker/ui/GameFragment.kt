@@ -54,14 +54,14 @@ class GameFragment : Fragment() {
             binding.editTextName.setText(it)
         }
         binding.textInputLayoutName.setEndIconOnClickListener {
-            viewModel.loadPlayer()
+            viewModel.loadCurrentSeasonPLayerInfo()
         }
         binding.editTextName.doAfterTextChanged { text ->
             viewModel.changeString(text.toString())
         }
-//        binding.btnSeasons.setOnClickListener {
-//            viewModel.loadSeasons()
-//        }
+        binding.btnSeasons.setOnClickListener {
+            viewModel.loadSeasons()
+        }
     }
 
     override fun onDestroyView() {
@@ -70,7 +70,7 @@ class GameFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.errorLD.observe(viewLifecycleOwner) {isError ->
+        viewModel.errorLD.observe(viewLifecycleOwner) { isError ->
             val message = if (isError) {
                 binding.textInputLayoutName.context.getString(R.string.error_input_name)
             } else {
@@ -78,13 +78,47 @@ class GameFragment : Fragment() {
             }
             binding.textInputLayoutName.error = message
         }
+        viewModel.fullPlayerInfo.observe(viewLifecycleOwner) {
+            if (it != null) {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.main_container,
+                        GameStatsFragment.newInstance(it.playerInfo, it.stats)
+                    )
+                    .addToBackStack(null)
+                    .commit()
+                viewModel.resetPlayerSeasonInfo()
+            }
+        }
+        viewModel.isLoadingLD.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.progressCircular.visibility = View.VISIBLE
+            } else {
+                binding.progressCircular.visibility = View.GONE
+            }
+        }
+        viewModel.errorRequestLD.observe(viewLifecycleOwner) {
+            if (it) {
+                showRequestErrorToast()
+            }
+        }
     }
+
 
     private fun setupTextChangeListeners() {
         binding.editTextName.doOnTextChanged { _, _, _, _ ->
             viewModel.resetInputNameError()
         }
     }
+
+    private fun showRequestErrorToast() {
+        Toast.makeText(
+            context,
+            getString(R.string.invalid_name),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
 
     private fun showTODOToast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
@@ -98,9 +132,10 @@ class GameFragment : Fragment() {
                     R.drawable.pubg
                 )
             )
+
             GameName.VALORANT -> showTODOToast("TODO Set drawable Valorant")
             GameName.MARVEL_RIVALS -> showTODOToast("TODO Set drawable MARVEL_RIVALS")
-            null -> TODO()
+            null -> throw IllegalArgumentException("Unknown gameName $gameName")
         }
     }
 
