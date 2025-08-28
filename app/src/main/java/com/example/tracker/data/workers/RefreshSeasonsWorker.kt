@@ -65,7 +65,7 @@ class RefreshSeasonsWorker(
 
         private fun makeConstraints(): Constraints {
             return Constraints.Builder().apply {
-                setRequiredNetworkType(NetworkType.UNMETERED)
+                setRequiredNetworkType(NetworkType.CONNECTED)
             }.build()
         }
     }
