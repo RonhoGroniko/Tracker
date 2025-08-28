@@ -1,8 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
 }
+
+
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+val apiKey = localProperties.getProperty("API_KEY") ?: ""
 
 android {
     namespace = "com.example.tracker"
@@ -16,6 +25,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "API_KEY", apiKey)
     }
 
     buildTypes {
@@ -36,13 +47,22 @@ android {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
         }
     }
-
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
 dependencies {
+
+    implementation(libs.dagger)
+    ksp (libs.dagger.compiler)
+
+
+    implementation(libs.androidx.work.runtime.ktx)
+
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.livedata.ktx)
